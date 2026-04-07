@@ -1,4 +1,4 @@
-package com.bcit.final_project
+package com.bcit.final_project.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.bcit.final_project.ui.NavBar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +45,6 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                         )
                     }
-                    composable("settings") {
-                        Settings(
-                            navController = navController,
-                        )
-                    }
                     composable(
                         route = "recipe/{recipeID}",
                         arguments = listOf(navArgument("recipeID") {
@@ -74,7 +70,6 @@ fun Search(navController: NavController) {
 }
 
 @Composable
-fun Settings(navController: NavController) {
+fun ItemCard(navController: NavController) {
 
 }
-
