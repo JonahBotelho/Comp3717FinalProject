@@ -1,10 +1,11 @@
 package com.bcit.final_project.data
 
 import com.google.gson.annotations.SerializedName
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 private data class MealLookupResponse(
     @SerializedName("meals")
@@ -12,17 +13,24 @@ private data class MealLookupResponse(
 )
 
 class RecipeRepository(
+    private val client: HttpClient,
     private val favouriteRecipeDao: FavouriteRecipeDao
 ) {
 
-    suspend fun getRecipesByName(name: String): Recipes {
+    suspend fun searchRecipesByName(name: String): List<Recipe> {
         val response = client.get("${SEARCH_BY_NAME}${name}")
+        require(response.status.isSuccess()) {
+            "Recipe search failed: ${response.status}"
+        }
         val result = response.body<Recipes>()
-        return Recipes(result.recipes.orEmpty())
+        return result.recipes.orEmpty()
     }
 
     suspend fun getRecipeById(id: String): Recipe {
         val response = client.get("${SEARCH_BY_ID}${id}")
+        require(response.status.isSuccess()) {
+            "Recipe lookup failed: ${response.status}"
+        }
         val result = response.body<MealLookupResponse>()
         return requireNotNull(result.meals?.firstOrNull()) {
             "Invalid id ($id)"
@@ -34,6 +42,9 @@ class RecipeRepository(
 
         repeat(numberOfRecipes) {
             val response = client.get(RANDOM_RECIPE)
+            require(response.status.isSuccess()) {
+                "Random recipe request failed: ${response.status}"
+            }
             val result: Recipes = response.body()
             recipes += result.recipes.orEmpty()
         }
@@ -42,15 +53,13 @@ class RecipeRepository(
     }
 
     fun observeFavourites(): Flow<List<Recipe>> =
-        favouriteRecipeDao.getAllFavourites().map { favourites ->
-            favourites.map(FavouriteRecipe::toRecipe)
-        }
+        favouriteRecipeDao.getAllFavourites()
 
     fun observeIsFavourite(recipeId: String): Flow<Boolean> =
         favouriteRecipeDao.isFavourite(recipeId)
 
     suspend fun saveFavourite(recipe: Recipe) {
-        favouriteRecipeDao.upsertFavourite(recipe.toFavouriteEntity())
+        favouriteRecipeDao.upsertFavourite(recipe.asFavourite())
     }
 
     suspend fun removeFavourite(recipeId: String) {
@@ -58,12 +67,11 @@ class RecipeRepository(
     }
 
     suspend fun toggleFavourite(recipe: Recipe) {
-        val recipeId = requireNotNull(recipe.id?.takeIf { it.isNotBlank() }) {
-            "Favourite recipes must have a non-blank id"
-        }
+        val recipeId = recipe.id.takeIf { it.isNotBlank() }
+            ?: throw IllegalArgumentException("Favourite recipes must have a non-blank id")
 
         if (favouriteRecipeDao.getFavouriteById(recipeId) == null) {
-            favouriteRecipeDao.upsertFavourite(recipe.toFavouriteEntity())
+            favouriteRecipeDao.upsertFavourite(recipe.asFavourite())
         } else {
             favouriteRecipeDao.deleteFavouriteById(recipeId)
         }

@@ -5,19 +5,19 @@ import org.junit.Test
 
 class RecipeMappersTest {
     @Test
-    fun recipeRoundTripPreservesStoredFields() {
+    fun asFavouritePreservesRecipeFieldsAndSetsTimestamp() {
         val recipe = sampleRecipe(id = "52772", tags = "Dinner,Quick")
 
-        val restored = recipe.toFavouriteEntity(savedAtEpochMillis = 1234L).toRecipe()
+        val restored = recipe.asFavourite(savedAtEpochMillis = 1234L)
 
-        assertEquals(recipe, restored)
+        assertEquals(recipe.copy(savedAtTime = 1234L), restored)
         assertEquals(listOf("Dinner", "Quick"), restored.tagsList)
         assertEquals("1 cup", restored.ingredientsList["Rice"])
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun toFavouriteEntityRejectsBlankId() {
-        sampleRecipe(id = " ").toFavouriteEntity()
+    fun asFavouriteRejectsBlankId() {
+        sampleRecipe(id = " ").asFavourite()
     }
 
     private fun sampleRecipe(id: String, tags: String? = null): Recipe =
@@ -67,6 +67,7 @@ class RecipeMappersTest {
             strMeasure17 = null,
             strMeasure18 = null,
             strMeasure19 = null,
-            strMeasure20 = null
+            strMeasure20 = null,
+            savedAtTime = 0L
         )
 }

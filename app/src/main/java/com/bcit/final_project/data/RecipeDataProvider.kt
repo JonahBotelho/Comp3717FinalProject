@@ -22,6 +22,7 @@ object RecipeDataProvider {
     fun recipeRepository(context: Context): RecipeRepository =
         repositoryInstance ?: synchronized(this) {
             repositoryInstance ?: RecipeRepository(
+                client = HttpProvider.client,
                 favouriteRecipeDao = database(context).favouriteRecipeDao()
             ).also { repositoryInstance = it }
         }

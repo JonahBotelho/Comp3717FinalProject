@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [FavouriteRecipe::class],
+    entities = [Recipe::class],
     version = 1,
     exportSchema = false
 )

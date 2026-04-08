@@ -1,5 +1,8 @@
 package com.bcit.final_project.data
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class Recipes (
@@ -7,9 +10,12 @@ data class Recipes (
     val recipes: List<Recipe>?
 )
 
+@Entity(tableName = "favourite_recipes")
 data class Recipe(
+    @PrimaryKey
+    @ColumnInfo(name = "recipeId")
     @SerializedName("idMeal")
-    val id: String?,
+    val id: String = "",
     @SerializedName("strMeal")
     val name: String?,
     @SerializedName("strCategory")
@@ -63,7 +69,8 @@ data class Recipe(
     val strMeasure17: String?,
     val strMeasure18: String?,
     val strMeasure19: String?,
-    val strMeasure20: String?
+    val strMeasure20: String?,
+    val savedAtTime: Long = 0L
 ) {
     val ingredientsList: Map<String, String>
         get() {

@@ -1,4 +1,4 @@
-package com.bcit.final_project.ui
+package com.bcit.final_project.ui.main
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons

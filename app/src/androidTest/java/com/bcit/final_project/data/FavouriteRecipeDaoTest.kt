@@ -64,9 +64,9 @@ class FavouriteRecipeDaoTest {
         recipeId: String,
         name: String = "Sample Meal",
         savedAtEpochMillis: Long
-    ): FavouriteRecipe =
-        FavouriteRecipe(
-            recipeId = recipeId,
+    ): Recipe =
+        Recipe(
+            id = recipeId,
             name = name,
             category = "Dinner",
             tags = "Simple,Favourite",
