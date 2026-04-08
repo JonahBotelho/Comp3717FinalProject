@@ -11,10 +11,18 @@ import com.bcit.final_project.data.RecipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+private const val DEFAULT_RANDOM_RECIPE_COUNT = 6
+
 class RecipeState(
     private val recipeRepository: RecipeRepository
 ) : ViewModel() {
-    var searchQuery by mutableStateOf("")
+    var searchInput by mutableStateOf("")
+        private set
+
+    var activeSearchQuery by mutableStateOf<String?>(null)
+        private set
+
+    var randomRecipes by mutableStateOf<List<Recipe>>(emptyList())
         private set
 
     var searchResults by mutableStateOf<List<Recipe>>(emptyList())
@@ -28,17 +36,40 @@ class RecipeState(
 
     val favourites: Flow<List<Recipe>> = recipeRepository.observeFavourites()
 
-    fun submitSearch(name: String) {
+    fun updateSearchInput(value: String) {
+        searchInput = value
+    }
+
+    fun loadRandomRecipes(numberOfRecipes: Int = DEFAULT_RANDOM_RECIPE_COUNT) {
+        errorMessage = null
+        isLoading = true
+
+        viewModelScope.launch {
+            try {
+                randomRecipes = recipeRepository
+                    .getRandomRecipes(numberOfRecipes)
+                    .recipes
+                    .orEmpty()
+            } catch (error: Exception) {
+                randomRecipes = emptyList()
+                errorMessage = error.message ?: "Random recipe load failed"
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+
+    fun submitSearch(name: String = searchInput) {
         val trimmedName = name.trim()
-        searchQuery = trimmedName
+        searchInput = trimmedName
         errorMessage = null
 
         if (trimmedName.isBlank()) {
-            searchResults = emptyList()
-            isLoading = false
+            clearSearch()
             return
         }
 
+        activeSearchQuery = trimmedName
         isLoading = true
         viewModelScope.launch {
             try {
@@ -53,7 +84,8 @@ class RecipeState(
     }
 
     fun clearSearch() {
-        searchQuery = ""
+        searchInput = ""
+        activeSearchQuery = null
         searchResults = emptyList()
         errorMessage = null
         isLoading = false

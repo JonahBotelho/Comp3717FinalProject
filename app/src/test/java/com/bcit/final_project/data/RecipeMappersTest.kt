@@ -8,7 +8,7 @@ class RecipeMappersTest {
     fun asFavouritePreservesRecipeFieldsAndSetsTimestamp() {
         val recipe = sampleRecipe(id = "52772", tags = "Dinner,Quick")
 
-        val restored = recipe.asFavourite(savedAtEpochMillis = 1234L)
+        val restored = recipe.setFavourite(savedAtEpochMillis = 1234L)
 
         assertEquals(recipe.copy(savedAtTime = 1234L), restored)
         assertEquals(listOf("Dinner", "Quick"), restored.tagsList)
@@ -17,7 +17,7 @@ class RecipeMappersTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun asFavouriteRejectsBlankId() {
-        sampleRecipe(id = " ").asFavourite()
+        sampleRecipe(id = " ").setFavourite()
     }
 
     private fun sampleRecipe(id: String, tags: String? = null): Recipe =
