@@ -111,3 +111,13 @@ data class Recipe(
             ?.filter { it.isNotBlank() }
             ?: emptyList()
 }
+
+fun Recipe.setFavourite(
+    savedAtEpochMillis: Long = System.currentTimeMillis()
+): Recipe {
+    require(id.isNotBlank()) {
+        "Favourite recipes must have a non-blank id"
+    }
+
+    return copy(savedAtTime = savedAtEpochMillis)
+}

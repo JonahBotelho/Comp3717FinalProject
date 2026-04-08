@@ -59,7 +59,7 @@ class RecipeRepository(
         favouriteRecipeDao.isFavourite(recipeId)
 
     suspend fun saveFavourite(recipe: Recipe) {
-        favouriteRecipeDao.upsertFavourite(recipe.asFavourite())
+        favouriteRecipeDao.upsertFavourite(recipe.setFavourite())
     }
 
     suspend fun removeFavourite(recipeId: String) {
@@ -71,7 +71,7 @@ class RecipeRepository(
             ?: throw IllegalArgumentException("Favourite recipes must have a non-blank id")
 
         if (favouriteRecipeDao.getFavouriteById(recipeId) == null) {
-            favouriteRecipeDao.upsertFavourite(recipe.asFavourite())
+            favouriteRecipeDao.upsertFavourite(recipe.setFavourite())
         } else {
             favouriteRecipeDao.deleteFavouriteById(recipeId)
         }
