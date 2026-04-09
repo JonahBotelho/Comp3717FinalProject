@@ -11,7 +11,7 @@ import com.bcit.final_project.data.RecipeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-private const val DEFAULT_RANDOM_RECIPE_COUNT = 6
+private const val DEFAULT_RANDOM_RECIPE_COUNT = 10
 
 class RecipeState(
     private val recipeRepository: RecipeRepository
@@ -32,6 +32,12 @@ class RecipeState(
         private set
 
     var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    var selectedRecipe by mutableStateOf<Recipe?>(null)
+        private set
+
+    var isRecipeDetailLoading by mutableStateOf(false)
         private set
 
     val favourites: Flow<List<Recipe>> = recipeRepository.observeFavourites()
@@ -89,6 +95,30 @@ class RecipeState(
         searchResults = emptyList()
         errorMessage = null
         isLoading = false
+    }
+
+    suspend fun getRecipeById(recipeId: String): Recipe =
+        recipeRepository.getRecipeById(recipeId)
+
+    fun loadRecipe(recipeId: String) {
+        val trimmedId = recipeId.trim()
+        selectedRecipe = null
+
+        if (trimmedId.isBlank()) {
+            isRecipeDetailLoading = false
+            return
+        }
+
+        isRecipeDetailLoading = true
+        viewModelScope.launch {
+            try {
+                selectedRecipe = getRecipeById(trimmedId)
+            } catch (error: Exception) {
+                selectedRecipe = null
+            } finally {
+                isRecipeDetailLoading = false
+            }
+        }
     }
 
     fun toggleFavourite(recipe: Recipe) {

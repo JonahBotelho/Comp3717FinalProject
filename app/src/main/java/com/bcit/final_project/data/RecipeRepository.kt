@@ -52,10 +52,10 @@ class RecipeRepository(
         return Recipes(recipes)
     }
 
-    fun observeFavourites(): Flow<List<Recipe>> =
+    fun getAllFavourites(): Flow<List<Recipe>> =
         favouriteRecipeDao.getAllFavourites()
 
-    fun observeIsFavourite(recipeId: String): Flow<Boolean> =
+    fun isFavourite(recipeId: String): Flow<Boolean> =
         favouriteRecipeDao.isFavourite(recipeId)
 
     suspend fun saveFavourite(recipe: Recipe) {

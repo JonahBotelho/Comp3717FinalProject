@@ -16,7 +16,10 @@ object RecipeDataProvider {
                 context.applicationContext,
                 RecipeDatabase::class.java,
                 "recipes.db"
-            ).build().also { databaseInstance = it }
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+                .also { databaseInstance = it }
         }
 
     fun recipeRepository(context: Context): RecipeRepository =

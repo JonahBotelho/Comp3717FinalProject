@@ -22,6 +22,8 @@ data class Recipe(
     val category: String?,
     @SerializedName("strTags")
     val tags: String?,
+    @SerializedName("strInstructions")
+    val instructions: String?,
     @SerializedName("strMealThumb")
     val image: String?,
     @SerializedName("strYoutube")

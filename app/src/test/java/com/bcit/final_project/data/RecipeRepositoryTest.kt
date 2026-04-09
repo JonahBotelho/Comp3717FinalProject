@@ -26,14 +26,14 @@ class RecipeRepositoryTest {
         val recipe = sampleRecipe(id = "100")
 
         repository.saveFavourite(recipe)
-        val savedRecipe = repository.observeFavourites().first().single()
+        val savedRecipe = repository.getAllFavourites().first().single()
         assertEquals(recipe.copy(savedAtTime = savedRecipe.savedAtTime), savedRecipe)
         assertTrue(savedRecipe.savedAtTime > 0L)
-        assertTrue(repository.observeIsFavourite("100").first())
+        assertTrue(repository.isFavourite("100").first())
 
         repository.removeFavourite("100")
-        assertTrue(repository.observeFavourites().first().isEmpty())
-        assertFalse(repository.observeIsFavourite("100").first())
+        assertTrue(repository.getAllFavourites().first().isEmpty())
+        assertFalse(repository.isFavourite("100").first())
     }
 
     @Test
@@ -43,10 +43,10 @@ class RecipeRepositoryTest {
         val recipe = sampleRecipe(id = "101")
 
         repository.toggleFavourite(recipe)
-        assertTrue(repository.observeIsFavourite("101").first())
+        assertTrue(repository.isFavourite("101").first())
 
         repository.toggleFavourite(recipe)
-        assertFalse(repository.observeIsFavourite("101").first())
+        assertFalse(repository.isFavourite("101").first())
     }
 
     @Test
@@ -152,6 +152,7 @@ class RecipeRepositoryTest {
             name = "Sample Meal",
             category = "Dinner",
             tags = "Simple,Favourite",
+            instructions = "Cook and serve.",
             image = "https://example.com/meal.jpg",
             video = "https://example.com/video",
             strIngredient1 = "Rice",

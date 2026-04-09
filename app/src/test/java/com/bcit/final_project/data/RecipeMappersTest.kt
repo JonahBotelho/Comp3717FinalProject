@@ -26,6 +26,7 @@ class RecipeMappersTest {
             name = "Sample Meal",
             category = "Dinner",
             tags = tags,
+            instructions = "Cook and serve.",
             image = "https://example.com/meal.jpg",
             video = "https://example.com/video",
             strIngredient1 = "Rice",
