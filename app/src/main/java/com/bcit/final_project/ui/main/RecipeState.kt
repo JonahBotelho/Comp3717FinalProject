@@ -40,7 +40,7 @@ class RecipeState(
     var isRecipeDetailLoading by mutableStateOf(false)
         private set
 
-    val favourites: Flow<List<Recipe>> = recipeRepository.observeFavourites()
+    val favourites: Flow<List<Recipe>> = recipeRepository.getAllFavourites()
 
     fun updateSearchInput(value: String) {
         searchInput = value
