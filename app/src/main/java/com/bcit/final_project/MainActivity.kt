@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bcit.final_project.data.RecipeDataProvider
 import com.bcit.final_project.ui.main.MainContent
 import com.bcit.final_project.ui.main.RecipeState
+import com.bcit.final_project.ui.theme.Final_projectTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -16,10 +17,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         val recipeRepository = RecipeDataProvider.recipeRepository(applicationContext)
         setContent {
-            val recipeState: RecipeState = viewModel(
-                factory = RecipeState.factory(recipeRepository)
-            )
-            MainContent(recipeState = recipeState)
+            Final_projectTheme {
+                val recipeState: RecipeState = viewModel(
+                    factory = RecipeState.factory(recipeRepository)
+                )
+                MainContent(recipeState = recipeState)
+            }
         }
     }
 }

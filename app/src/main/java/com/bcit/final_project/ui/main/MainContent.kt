@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,6 +48,7 @@ import com.bcit.final_project.data.Recipe
 fun MainContent(recipeState: RecipeState) {
     val navController = rememberNavController()
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             NavBar(
                 navController = navController
@@ -270,7 +271,7 @@ fun ItemCard(
             .fillMaxWidth()
             .clickable { onClick() },
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Row(
@@ -312,9 +313,9 @@ fun ItemCard(
                         "Add favourite"
                     },
                     tint = if (isFavourite) {
-                        Color(0xFFFFC107)
+                        MaterialTheme.colorScheme.tertiary
                     } else {
-                        Color.Gray
+                        MaterialTheme.colorScheme.onSurfaceVariant
                     }
                 )
             }
