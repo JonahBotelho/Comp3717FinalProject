@@ -106,12 +106,6 @@ data class Recipe(
                 }
         }
 
-    val tagsList: List<String>
-        get() = tags
-            ?.split(",")
-            ?.map { it.trim() }
-            ?.filter { it.isNotBlank() }
-            ?: emptyList()
 }
 
 fun Recipe.setFavourite(
