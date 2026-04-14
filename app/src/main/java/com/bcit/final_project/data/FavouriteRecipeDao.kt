@@ -10,9 +10,6 @@ interface FavouriteRecipeDao {
     @Query("SELECT * FROM favourite_recipes ORDER BY savedAtTime DESC")
     fun getAllFavourites(): Flow<List<Recipe>>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favourite_recipes WHERE recipeId = :recipeId)")
-    fun isFavourite(recipeId: String): Flow<Boolean>
-
     @Query("SELECT * FROM favourite_recipes WHERE recipeId = :recipeId LIMIT 1")
     suspend fun getFavouriteById(recipeId: String): Recipe?
 
