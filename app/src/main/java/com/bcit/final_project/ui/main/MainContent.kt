@@ -30,6 +30,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -131,6 +133,7 @@ fun Bookmarks(navController: NavController, recipeState: RecipeState) {
 fun Search(navController: NavController, recipeState: RecipeState) {
     val favourites by recipeState.favourites.collectAsState(initial = emptyList())
     val favouriteIds = favourites.map { recipe -> recipe.id }.toSet()
+    val focusManager = LocalFocusManager.current
     val visibleRecipes = if (recipeState.activeSearchQuery == null) {
         recipeState.randomRecipes
     } else {
@@ -168,6 +171,7 @@ fun Search(navController: NavController, recipeState: RecipeState) {
                 keyboardActions = KeyboardActions(
                     onSearch = {
                         recipeState.submitSearch()
+                        focusManager.clearFocus()
                     }
                 ),
                 trailingIcon = {
@@ -186,6 +190,7 @@ fun Search(navController: NavController, recipeState: RecipeState) {
             IconButton(
                 onClick = {
                     recipeState.submitSearch()
+                    focusManager.clearFocus()
                 }
             ) {
                 Icon(
