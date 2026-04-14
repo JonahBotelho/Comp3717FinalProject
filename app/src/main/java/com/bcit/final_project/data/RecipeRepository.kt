@@ -55,17 +55,6 @@ class RecipeRepository(
     fun getAllFavourites(): Flow<List<Recipe>> =
         favouriteRecipeDao.getAllFavourites()
 
-    fun isFavourite(recipeId: String): Flow<Boolean> =
-        favouriteRecipeDao.isFavourite(recipeId)
-
-    suspend fun saveFavourite(recipe: Recipe) {
-        favouriteRecipeDao.upsertFavourite(recipe.setFavourite())
-    }
-
-    suspend fun removeFavourite(recipeId: String) {
-        favouriteRecipeDao.deleteFavouriteById(recipeId)
-    }
-
     suspend fun toggleFavourite(recipe: Recipe) {
         val recipeId = recipe.id.takeIf { it.isNotBlank() }
             ?: throw IllegalArgumentException("Favourite recipes must have a non-blank id")

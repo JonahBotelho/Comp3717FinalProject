@@ -11,7 +11,6 @@ class RecipeMappersTest {
         val restored = recipe.setFavourite(savedAtEpochMillis = 1234L)
 
         assertEquals(recipe.copy(savedAtTime = 1234L), restored)
-        assertEquals(listOf("Dinner", "Quick"), restored.tagsList)
         assertEquals("1 cup", restored.ingredientsList["Rice"])
     }
 

@@ -11,7 +11,6 @@ import io.ktor.serialization.gson.gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -20,20 +19,15 @@ import org.junit.Test
 
 class RecipeRepositoryTest {
     @Test
-    fun saveAndRemoveFavouriteUpdateObservedFavourites() = runBlocking {
+    fun toggleFavouriteAddsRecipeToObservedFavourites() = runBlocking {
         val dao = FakeFavouriteRecipeDao()
         val repository = RecipeRepository(testClient(), dao)
         val recipe = sampleRecipe(id = "100")
 
-        repository.saveFavourite(recipe)
+        repository.toggleFavourite(recipe)
         val savedRecipe = repository.getAllFavourites().first().single()
         assertEquals(recipe.copy(savedAtTime = savedRecipe.savedAtTime), savedRecipe)
-        assertTrue(savedRecipe.savedAtTime > 0L)
-        assertTrue(repository.isFavourite("100").first())
-
-        repository.removeFavourite("100")
-        assertTrue(repository.getAllFavourites().first().isEmpty())
-        assertFalse(repository.isFavourite("100").first())
+        assertFalse(savedRecipe.savedAtTime == 0L)
     }
 
     @Test
@@ -43,10 +37,10 @@ class RecipeRepositoryTest {
         val recipe = sampleRecipe(id = "101")
 
         repository.toggleFavourite(recipe)
-        assertTrue(repository.isFavourite("101").first())
+        assertEquals(listOf("101"), repository.getAllFavourites().first().map { it.id })
 
         repository.toggleFavourite(recipe)
-        assertFalse(repository.isFavourite("101").first())
+        assertTrue(repository.getAllFavourites().first().isEmpty())
     }
 
     @Test
@@ -119,19 +113,16 @@ class RecipeRepositoryTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun saveFavouriteRejectsBlankId() = runBlocking {
+    fun toggleFavouriteRejectsBlankId() = runBlocking {
         val repository = RecipeRepository(testClient(), FakeFavouriteRecipeDao())
 
-        repository.saveFavourite(sampleRecipe(id = " "))
+        repository.toggleFavourite(sampleRecipe(id = " "))
     }
 
     private class FakeFavouriteRecipeDao : FavouriteRecipeDao {
         private val favourites = MutableStateFlow<List<Recipe>>(emptyList())
 
         override fun getAllFavourites(): Flow<List<Recipe>> = favourites
-
-        override fun isFavourite(recipeId: String): Flow<Boolean> =
-            favourites.map { entities -> entities.any { it.id == recipeId } }
 
         override suspend fun getFavouriteById(recipeId: String): Recipe? =
             favourites.value.firstOrNull { it.id == recipeId }

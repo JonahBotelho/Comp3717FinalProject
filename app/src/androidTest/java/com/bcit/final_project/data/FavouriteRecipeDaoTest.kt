@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,11 +40,11 @@ class FavouriteRecipeDaoTest {
         dao.upsertFavourite(newerFavourite)
 
         assertEquals(listOf(newerFavourite, firstFavourite), dao.getAllFavourites().first())
-        assertTrue(dao.isFavourite("1").first())
+        assertEquals(firstFavourite, dao.getFavouriteById("1"))
 
         dao.deleteFavouriteById("1")
 
-        assertFalse(dao.isFavourite("1").first())
+        assertNull(dao.getFavouriteById("1"))
         assertEquals(listOf(newerFavourite), dao.getAllFavourites().first())
     }
 
