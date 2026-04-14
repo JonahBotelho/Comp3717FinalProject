@@ -60,7 +60,7 @@ class RecipeRepository(
             ?: throw IllegalArgumentException("Favourite recipes must have a non-blank id")
 
         if (favouriteRecipeDao.getFavouriteById(recipeId) == null) {
-            favouriteRecipeDao.upsertFavourite(recipe.setFavourite())
+            favouriteRecipeDao.saveFavourite(recipe.setFavourite())
         } else {
             favouriteRecipeDao.deleteFavouriteById(recipeId)
         }

@@ -36,8 +36,8 @@ class FavouriteRecipeDaoTest {
         val firstFavourite = sampleEntity(recipeId = "1", savedAtEpochMillis = 10L)
         val newerFavourite = sampleEntity(recipeId = "2", savedAtEpochMillis = 20L)
 
-        dao.upsertFavourite(firstFavourite)
-        dao.upsertFavourite(newerFavourite)
+        dao.saveFavourite(firstFavourite)
+        dao.saveFavourite(newerFavourite)
 
         assertEquals(listOf(newerFavourite, firstFavourite), dao.getAllFavourites().first())
         assertEquals(firstFavourite, dao.getFavouriteById("1"))
@@ -50,8 +50,8 @@ class FavouriteRecipeDaoTest {
 
     @Test
     fun upsertReplacesExistingRecipe() = runBlocking {
-        dao.upsertFavourite(sampleEntity(recipeId = "1", savedAtEpochMillis = 10L))
-        dao.upsertFavourite(sampleEntity(recipeId = "1", name = "Updated", savedAtEpochMillis = 30L))
+        dao.saveFavourite(sampleEntity(recipeId = "1", savedAtEpochMillis = 10L))
+        dao.saveFavourite(sampleEntity(recipeId = "1", name = "Updated", savedAtEpochMillis = 30L))
 
         val favourites = dao.getAllFavourites().first()
         assertEquals(1, favourites.size)

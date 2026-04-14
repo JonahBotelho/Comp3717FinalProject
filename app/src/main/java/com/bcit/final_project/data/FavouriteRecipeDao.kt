@@ -14,7 +14,7 @@ interface FavouriteRecipeDao {
     suspend fun getFavouriteById(recipeId: String): Recipe?
 
     @Upsert
-    suspend fun upsertFavourite(entity: Recipe)
+    suspend fun saveFavourite(entity: Recipe)
 
     @Query("DELETE FROM favourite_recipes WHERE recipeId = :recipeId")
     suspend fun deleteFavouriteById(recipeId: String)
